@@ -8,7 +8,9 @@ $guid = [guid]::NewGuid()
 $downloadURL = [string]::Format("https://github.com/{0}/{1}/archive/{2}.zip", $repositoryOwner, $repositoryName, $branch)
 $downloadFile = ".\" + $guid + ".zip"
 $tempDir =  ".\" + $guid
-$buildDefinitions = [string]::Format("{0}\{1}-{2}\BuildDefinitions\*", $tempDir, $repositoryName, $branch)
+$base = [string]::Format("{0}\{1}-{2}\", $tempDir, $repositoryName, $branch)
+$buildDefinitions = $base + "BuildDefinitions\*"
+$cakeBootstrapper = $base + "build.ps1"
 
 If(!(Test-Path $path))
 {
@@ -22,5 +24,6 @@ Expand-Archive -Path $downloadFile -DestinationPath $tempDir
 Remove-Item -Path $downloadFile -Force
 
 Copy-Item -Path $buildDefinitions -Recurse -Force -Destination $path -Container
+Copy-Item -Path $cakeBootstrapper -Force -Destination ".\build.ps1" 
 
 Remove-Item -Path $tempDir -Force -Recurse
